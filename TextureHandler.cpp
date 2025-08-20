@@ -1,10 +1,10 @@
 
-#include "Object.hpp"
 #include "TextureHandler.hpp"
 
 
-TextureHandler::TextureHandler(Object* object)
-	: object{object} { }
+TextureHandler::TextureHandler(object_form* form, SDL_Renderer* render)
+	: form{ form }, render{render} {
+}
 
 TextureHandler::~TextureHandler()
 {
@@ -33,8 +33,6 @@ void TextureHandler::process()
 {
 	if (texture == nullptr) return;
 
-	//set_object_size();
-
 	if (is_plaing) {
 		if (std::chrono::steady_clock::now() - anim_start > delay) {
 			if (shot_num < shot_of_anim) {
@@ -49,14 +47,14 @@ void TextureHandler::process()
 		}
 	}
 
-	SDL_RenderTexture(object->render, texture, 
+	SDL_RenderTexture(render, texture, 
 		&show_texture_frame, &size_texture_frame);
 }
 
 
 void TextureHandler::set_texture(std::string file_name, float frame_w, float frame_h)
 {
-	texture = IMG_LoadTexture(object->render, file_name.c_str());
+	texture = IMG_LoadTexture(render, file_name.c_str());
 	set_object_size();
 	show_texture_frame.x = 0;
 	show_texture_frame.y = 0;
@@ -66,8 +64,8 @@ void TextureHandler::set_texture(std::string file_name, float frame_w, float fra
 
 void TextureHandler::set_object_size()
 {
-	size_texture_frame.x = object->center_x;
-	size_texture_frame.y = object->center_y;
-	size_texture_frame.w = object->width;
-	size_texture_frame.h = object->height;
+	size_texture_frame.x = form->center_x;
+	size_texture_frame.y = form->center_y;
+	size_texture_frame.w = form->width;
+	size_texture_frame.h = form->height;
 }

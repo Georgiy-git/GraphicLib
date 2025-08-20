@@ -4,10 +4,10 @@
 
 
 Object::Object(SDL_Renderer* render, float center_x, float center_y, float width, float height)
-	: render(render), center_x(center_x), center_y(center_y), width(width), height(height),
-	texture_handler{ std::make_shared<TextureHandler>(this) }
+	: render(render), form{ center_x, center_y, width, height },
+	texture_handler{ std::make_shared<TextureHandler>(&form, render) }
 {
-	set_size(-1, -1, -1, -1);
+	set_form({});
 	set_frame_size();
 }
 
@@ -34,8 +34,8 @@ const bool Object::inside() {
 }
 
 const bool Object::inside(float x, float y) {
-	return (x > left_border && x < right_border &&
-		y > upper_border && y < lower_border);
+	return (x > form.left_border && x < form.right_border &&
+		y > form.upper_border && y < form.lower_border);
 }
 
 void Object::set_render_draw_color(rgba _rgba) {
@@ -97,30 +97,50 @@ void Object::set_frame_color(uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
 void Object::set_frame_size(float x)
 {
 	multiplier = x;
-	frame.x = left_border - (right_border - left_border) * (x - 1) / 2;
-	frame.y = upper_border - (lower_border - upper_border) * (x - 1) / 2;
-	frame.w = (right_border - left_border) * x;
-	frame.h = (lower_border - upper_border) * x;
+	frame.x = form.left_border - (form.right_border - form.left_border) * (x - 1) / 2;
+	frame.y = form.upper_border - (form.lower_border - form.upper_border) * (x - 1) / 2;
+	frame.w = (form.right_border - form.left_border) * x;
+	frame.h = (form.lower_border - form.upper_border) * x;
+}
+
+void Object::add_x(float x) {
+	form.center_x += x;
+	form.left_border = form.center_x;
+	form.right_border = form.center_x + form.width;
+	texture_handler->set_object_size();
+	set_frame_size(multiplier);
+}
+
+void Object::add_y(float y) {
+	form.center_y += y;
+	texture_handler->set_object_size();
+	form.upper_border = form.center_y;
+	form.lower_border = form.center_y + form.height;
+	set_frame_size(multiplier);
 }
 
 void Object::render_frame(bool flag) {
 	flag_render_frame = flag;
 }
 
-void Object::set_size(float center_x, float center_y, float width, float height)
+void Object::set_form(const object_form& form)
 {
-	if (center_x != -1) { this->center_x = center_x; }
-	if (center_y != -1) { this->center_y = center_y; }
-	if (width != -1)	{ this->width = width; }
-	if (height != -1) { this->height = height; }
+	if (form.center_x) { this->form.center_x = form.center_x; }
+	if (form.center_y) { this->form.center_y = form.center_y; }
+	if (form.width) { this->form.width = form.width; }
+	if (form.height) { this->form.height = form.height; }
 
-	left_border = this->center_x;
-	right_border = this->center_x + this->width;
-	upper_border = this->center_y;
-	lower_border = this->center_y + this->height;
+	this->form.left_border = this->form.center_x;
+	this->form.right_border = this->form.center_x + this->form.width;
+	this->form.upper_border = this->form.center_y;
+	this->form.lower_border = this->form.center_y + this->form.height;
 
 	texture_handler->set_object_size();
 	set_frame_size(multiplier);
+}
+
+const object_form& Object::get_form() {
+	return form;
 }
 
 void Object::start_anim(int num_anim, int shot_of_anim, int delay_ms) {

@@ -10,6 +10,18 @@
 
 using rgba = std::array<uint8_t, 4>;
 
+typedef struct {
+	float center_x;
+	float center_y;
+	float width;
+	float height;
+	float left_border;
+	float right_border;
+	float upper_border;
+	float lower_border;
+} object_form;
+
+
 class Object //Базовый класс для всех графических объектов.
 {
 	friend class TextureHandler;
@@ -36,16 +48,18 @@ public:
 	//Задаёт размер рамки кратности x.
 	void set_frame_size(float x = 1);
 
+	//Суммирует х с текущим положением по горизонтали.
+	void add_x(float x);
+
+	//Суммирует у с текущим положением по вертикали.
+	void add_y(float y);
+
 	//Установить отладочную рамку.
 	void render_frame(bool flag);
 
-	//При -1 задаются соответствующие ранее устновленные размеры.
-	//center_x и center_y - координаты верхнего левого угла объекта.
-	void set_size(float center_x = -1, float center_y = -1, float width = -1, float height = -1);
+	void set_form(const object_form& form);
 
-	//Основные параметры размеров объекта.
-	float center_x, center_y, width, height,
-		left_border, right_border, upper_border, lower_border;
+	const object_form& get_form();
 
 	//Вход курсора мыши в область объекта.
 	const bool in();
@@ -62,6 +76,8 @@ public:
 	void start_anim(int num_anim = 0, int shot_of_anim = 1, int delay_ms = 50);
 
 protected:
+	object_form form;
+
 	virtual const bool inside(float x, float y);
 
 	void set_render_draw_color(rgba _rgba);
