@@ -61,22 +61,19 @@ void Object::iterate() {
 
 void Object::event_process(SDL_Event* event) {
 	if (event->type == SDL_EVENT_MOUSE_MOTION) {
+		if (in_flag) in_flag = false;
+		if (out_flag) out_flag = false;
+
 		if (inside(event->button.x, event->button.y)) {
 			if (!inside_flag) {
 				inside_flag = true;
 				in_flag = true;
-			}
-			else {
-				if (in_flag) in_flag = false;
 			}
 		}
 		else {
 			if (inside_flag) {
 				inside_flag = false;
 				out_flag = true;
-			}
-			else {
-				if (out_flag) out_flag = false;
 			}
 		}
 	}

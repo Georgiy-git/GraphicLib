@@ -134,6 +134,8 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainProcess.cpp" />
     <ClCompile Include="Object.cpp" />
+    <ClCompile Include="Panel.cpp" />
+    <ClCompile Include="PressButtonGroup.cpp" />
     <ClCompile Include="TextureHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -141,6 +143,8 @@
     <ClInclude Include="EnumProcesses.hpp" />
     <ClInclude Include="MainProcess.hpp" />
     <ClInclude Include="Object.hpp" />
+    <ClInclude Include="Panel.hpp" />
+    <ClInclude Include="PressButtonGroup.hpp" />
     <ClInclude Include="TextureHandler.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
