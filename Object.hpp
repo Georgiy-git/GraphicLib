@@ -11,14 +11,15 @@
 using rgba = std::array<uint8_t, 4>;
 
 typedef struct {
-	float center_x;
-	float center_y;
-	float width;
-	float height;
-	float left_border;
-	float right_border;
-	float upper_border;
-	float lower_border;
+	float
+	corner_x,
+	corner_y,
+	width,
+	height,
+	left_border,
+	right_border,
+	upper_border,
+	lower_border;
 } object_form;
 
 
@@ -28,7 +29,7 @@ class Object //Базовый класс для всех графических объектов.
 
 public:
 	//Соответственно init, iter, event и quit.
-	Object(SDL_Renderer* render, float center_x, float center_y, float width, float height);
+	Object(SDL_Renderer* render, float corner_x, float corner_y, float width, float height);
 	virtual void iterate();
 	virtual void event_process(SDL_Event* event);
 	virtual ~Object();
@@ -57,7 +58,8 @@ public:
 	//Установить отладочную рамку.
 	void render_frame(bool flag);
 
-	void set_form(const object_form& form);
+	//При default_values = true нулевые значения переданной структуры учитываться не будут.
+	void set_form(const object_form& form, bool default_values = true);
 
 	const object_form& get_form();
 
@@ -100,9 +102,6 @@ private:
 };
 
 /*   Примечания
-
-Для корректного перемещения объекта используется set_size, 
-так как это устанавливает действительные границы объекта.
 
 Графическое отображение объекта осуществляется только с помощью текстуры.
 */

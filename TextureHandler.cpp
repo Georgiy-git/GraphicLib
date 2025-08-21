@@ -64,8 +64,8 @@ void TextureHandler::set_texture(std::string file_name, float frame_w, float fra
 
 void TextureHandler::set_object_size()
 {
-	size_texture_frame.x = form->center_x;
-	size_texture_frame.y = form->center_y;
+	size_texture_frame.x = form->corner_x;
+	size_texture_frame.y = form->corner_y;
 	size_texture_frame.w = form->width;
 	size_texture_frame.h = form->height;
 }

@@ -104,36 +104,36 @@ void Object::set_frame_size(float x)
 }
 
 void Object::add_x(float x) {
-	form.center_x += x;
-	form.left_border = form.center_x;
-	form.right_border = form.center_x + form.width;
-	texture_handler->set_object_size();
-	set_frame_size(multiplier);
+	set_form({ form.corner_x + x , form.corner_y, form.width, form.height });
 }
 
 void Object::add_y(float y) {
-	form.center_y += y;
-	texture_handler->set_object_size();
-	form.upper_border = form.center_y;
-	form.lower_border = form.center_y + form.height;
-	set_frame_size(multiplier);
+	set_form({ form.corner_x, form.corner_y + y, form.width, form.height });
 }
 
 void Object::render_frame(bool flag) {
 	flag_render_frame = flag;
 }
 
-void Object::set_form(const object_form& form)
+void Object::set_form(const object_form& form, bool default_values)
 {
-	if (form.center_x) { this->form.center_x = form.center_x; }
-	if (form.center_y) { this->form.center_y = form.center_y; }
-	if (form.width) { this->form.width = form.width; }
-	if (form.height) { this->form.height = form.height; }
+	if (default_values) {
+		if (form.corner_x) { this->form.corner_x = form.corner_x; }
+		if (form.corner_y) { this->form.corner_y = form.corner_y; }
+		if (form.width) { this->form.width = form.width; }
+		if (form.height) { this->form.height = form.height; }
+	}
+	else {
+		this->form.corner_x = form.corner_x;
+		this->form.corner_y = form.corner_y;
+		this->form.width = form.width;
+		this->form.height = form.height;
+	}
 
-	this->form.left_border = this->form.center_x;
-	this->form.right_border = this->form.center_x + this->form.width;
-	this->form.upper_border = this->form.center_y;
-	this->form.lower_border = this->form.center_y + this->form.height;
+	this->form.left_border = this->form.corner_x;
+	this->form.right_border = this->form.corner_x + this->form.width;
+	this->form.upper_border = this->form.corner_y;
+	this->form.lower_border = this->form.corner_y + this->form.height;
 
 	texture_handler->set_object_size();
 	set_frame_size(multiplier);
