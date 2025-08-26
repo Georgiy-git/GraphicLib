@@ -21,5 +21,5 @@ public:
 
 private:
 	SDL_Renderer* render;
-	std::vector<Object*> objects;
+	std::vector<std::shared_ptr<Object>> objects;
 };

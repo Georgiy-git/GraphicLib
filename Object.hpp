@@ -38,7 +38,10 @@ public:
 	static std::pair<int, int> get_display_size();
 
 	// «агружает и устанавливает изображение по указанному пути.
-	void set_texture(std::string file_name, float frame_w, float frame_h);
+	void load_and_set_texture(std::string file_name, int frame_w_px, int frame_h_px);
+
+	// ”станавливает загрущенное изображение.
+	void set_texture(SDL_Texture* texture, int frame_w_px, int frame_h_py);
 
 	//»зменение отображаемого кадра.
 	void change_show_rect(int column, int row);
@@ -85,12 +88,12 @@ protected:
 	void set_render_draw_color(rgba _rgba);
 	static rgba pack_uint8(uint8_t r, uint8_t g, uint8_t b, uint8_t a);
 
+	SDL_Renderer* render = nullptr;
+
 private:
 	bool inside_flag = false;
 	bool in_flag = false;
 	bool out_flag = false;
-
-	SDL_Renderer* render = nullptr;
 
 	std::shared_ptr<TextureHandler> texture_handler = nullptr;
 

@@ -24,7 +24,10 @@ public:
 	void process();
 
 	// Загружает и устанавливает изображение по указанному пути.
-	void set_texture(std::string file_name, float frame_w, float frame_h);
+	void load_and_set_texture(std::string file_name, int frame_w_px, int frame_h_px);
+
+	// Устанавливает загрущенное изображение.
+	void set_texture(SDL_Texture* texture, int frame_w_px, int frame_h_px);
 
 	//Установить размер изображения под размер объекта.
 	void set_object_size();

@@ -2,6 +2,7 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
 #include <SDL3_image/SDL_image.h>
+
 #include <iostream>
 #include <vector>
 
@@ -11,7 +12,6 @@
 #include "Button.hpp"
 
 
-//Глобальные переменные
 SDL_Window* window;
 SDL_Renderer* render;
 int this_process = -1;
@@ -24,6 +24,7 @@ MainProcess* main_process;
 
 SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
 {
+	setlocale(LC_ALL, "RU");
 	SDL_Init(SDL_INIT_VIDEO);
 	SDL_CreateWindowAndRenderer("graphic lib", 600, 400, 0, &window, &render);
 

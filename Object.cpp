@@ -46,8 +46,12 @@ rgba Object::pack_uint8(uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
 	return rgba{r, g, b, a};
 }
 
-void Object::set_texture(std::string file_name, float frame_w, float frame_h) {
-	texture_handler->set_texture(file_name, frame_w, frame_h);
+void Object::load_and_set_texture(std::string file_name, int frame_w_px, int frame_h_px) {
+	texture_handler->load_and_set_texture(file_name, frame_w_px, frame_h_px);
+}
+
+void Object::set_texture(SDL_Texture* texture, int frame_w_px, int frame_h_px) {
+	texture_handler->set_texture(texture, frame_w_px, frame_h_px);
 }
 
 void Object::change_show_rect(int column, int row) {
