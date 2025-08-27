@@ -22,7 +22,7 @@ MainProcess::MainProcess(SDL_Renderer* render)
 		panel->add(button);
 	}
 
-	auto line = std::make_shared<Line>("ÏĞÈÂÅÒ ÌÈĞ", render, 50, 200, 0.3);
+	auto line = std::make_shared<Line>("[ÏĞÈÂÅÒ+=_-ÌÈĞ]; ,(404)", render, 10, 200, 0.3);
 	objects.push_back(line);
 }
 

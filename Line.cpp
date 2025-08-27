@@ -6,7 +6,7 @@ Line::Line(const std::string& line, SDL_Renderer* render, float corner_x, float 
 	: Panel(render, corner_x, corner_y, 0, 0, 'h', distance, distance_of_border_w, distance_of_border_h),
 	line{ line }, multiplier(multiplier)
 {
-	font = IMG_LoadTexture(render, "textures\\symbols.png");
+	font = IMG_LoadTexture(render, "textures\\symbols.svg");
 	set_text(line);
 }
 
