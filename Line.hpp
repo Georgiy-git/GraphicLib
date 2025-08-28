@@ -3,6 +3,9 @@
 #include "Panel.hpp"
 
 
+/* Текстовая строка
+*/
+
 class Line : public Panel
 {
 public:
@@ -15,6 +18,8 @@ public:
 	virtual ~Line() override = default;
 
 	void set_text(const std::string& text);
+
+	void add_text(const std::string& text);
 
 	const std::string& get_text();
 

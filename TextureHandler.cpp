@@ -6,12 +6,7 @@ TextureHandler::TextureHandler(object_form* form, SDL_Renderer* render)
 	: form{ form }, render{render} {
 }
 
-TextureHandler::~TextureHandler()
-{
-	if (texture != nullptr) {
-		SDL_DestroyTexture(texture);
-	}
-}
+TextureHandler::~TextureHandler() { }
 
 void TextureHandler::start_anim(int num_anim, int shot_of_anim, int delay_ms)
 {

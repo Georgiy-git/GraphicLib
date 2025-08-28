@@ -7,7 +7,7 @@
 MainProcess::MainProcess(SDL_Renderer* render)
 	: render{render}
 {
-	auto panel = std::make_shared<Panel>(render, 10, 10, 0, 0);
+	auto panel = std::make_shared<Panel>(render, 10, 10);
 	panel->render_frame(true);
 	objects.push_back(panel);
 
@@ -21,9 +21,8 @@ MainProcess::MainProcess(SDL_Renderer* render)
 		button->set_pressing_flag(true);
 		panel->add(button);
 	}
-
-	auto line = std::make_shared<Line>("[ÏĞÈÂÅÒ+=_-ÌÈĞ]; ,(404)", render, 10, 200, 0.3);
-	objects.push_back(line);
+	/*auto line = std::make_shared<Line>("[ÏĞÈÂÅÒ] ", render, 10, 200, 0.3);
+	objects.push_back(line);*/
 }
 
 void MainProcess::iterate() {
