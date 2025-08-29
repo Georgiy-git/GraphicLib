@@ -26,14 +26,12 @@ void Button::event_process(SDL_Event* event)
 	}
 }
 
-void Button::remove_pressing()
-{
+void Button::remove_pressing() {
 	pressing = false;
 	change_show_rect(0, 0);
 }
 
-void Button::set_pressing()
-{
+void Button::set_pressing() {
 	pressing = true;
 	change_show_rect(1, 0);
 }

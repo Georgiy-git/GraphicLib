@@ -11,25 +11,39 @@
 
 #include "Button.hpp"
 
-
+//Базовые переменные.
 SDL_Window* window;
 SDL_Renderer* render;
-int this_process = -1;
+extern int this_process;
 std::vector<Object*> objects;
 
-
-//Процессы
+//Процессы.
 MainProcess* main_process;
 
+//Пользовательские переменные.
+Object* wrap_button;
+Object* close_button;
 
 SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
 {
 	setlocale(LC_ALL, "RU");
 	SDL_Init(SDL_INIT_VIDEO);
-	SDL_CreateWindowAndRenderer("graphic lib", 600, 400, 0, &window, &render);
+	SDL_CreateWindowAndRenderer("", 0, 0, SDL_WINDOW_FULLSCREEN, &window, &render);
 
 	main_process = new MainProcess(render);
 	this_process = MAIN_PROCESS;
+
+	auto dislpay_size = Object::get_display_size();
+
+	wrap_button = new Button(render, dislpay_size.first - 200, 0, 100, 60);
+	auto wrap_button_texture = IMG_LoadTexture(render, "textures\\anim_wrap_button.png");
+	wrap_button->set_texture(wrap_button_texture, 500, 300);
+	objects.push_back(wrap_button);
+
+	close_button = new Button(render, dislpay_size.first - 100, 0, 100, 60);
+	auto close_button_texture = IMG_LoadTexture(render, "textures\\anim_button_close.png");
+	close_button->set_texture(close_button_texture, 500, 300);
+	objects.push_back(close_button);
 
 	return SDL_APP_CONTINUE;
 }
@@ -65,6 +79,25 @@ SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event)
 
 	for (auto object : objects) {
 		object->event_process(event);
+	}
+
+	if (event->type == SDL_EVENT_MOUSE_MOTION) {
+		if (wrap_button->in()) wrap_button->start_anim(0, 6, 30);
+		else if (wrap_button->out()) wrap_button->start_anim(1, 6, 30);
+
+		if (close_button->in()) close_button->start_anim(0, 6, 30);
+		else if (close_button->out()) close_button->start_anim(1, 6, 30);
+	}
+	else if (event->type == SDL_EVENT_MOUSE_BUTTON_DOWN) {
+		if (close_button->inside()) {
+			return SDL_APP_SUCCESS;
+		}
+		if (wrap_button->inside()) {
+			SDL_MinimizeWindow(window);
+		}
+	}
+	else if (event->type == SDL_EVENT_MOUSE_BUTTON_UP) {
+
 	}
 
 	return SDL_APP_CONTINUE;

@@ -3,7 +3,8 @@
 #include "Panel.hpp"
 
 
-/* Текстовая строка
+/* Текстовая строка.
+* Для отображения установите шрифт.
 */
 
 class Line : public Panel
@@ -13,21 +14,34 @@ public:
 		float multiplier = 1,
 		float distance = 5, float distance_of_border_w = 20, float distance_of_border_h = 20);
 
-	virtual void event_process(SDL_Event* event) override;
+	void event_process(SDL_Event* event) override;
 
-	virtual ~Line() override = default;
-
+	// Установить текст, стерев старый.
 	void set_text(const std::string& text);
 
-	void add_text(const std::string& text);
+	// Добавить текст к уже существующему.
+	void append_text(const std::string& text);
 
+	// Получить текст строки.
 	const std::string& get_text();
 
-	void set_font(const std::string& file_name);
+	// Установить шрифт для всех строк.
+	static void set_font(SDL_Texture* font);
+
+	// Установить шрифт по умолчанию.
+	// Возвращает указатель на этот шрифт, вызывающий код отвечает
+	// за освобождение памяти при необходимости.
+	static SDL_Texture* set_default_font(SDL_Renderer* render);
+
+	// Установить специальный шрифт для этой строки.
+	void set_special_font(SDL_Texture* font);
 
 private:
+	static inline SDL_Texture* font;
+
+	SDL_Texture* special_font = nullptr;
+
 	float multiplier;
-	SDL_Texture* font;
 	std::string line;
 	int symbol_w = 60;
 	int symbol_h = 100;

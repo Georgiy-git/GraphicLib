@@ -21,19 +21,19 @@ std::pair<int, int> Object::get_display_size()
 	return std::pair<int, int>(display_bounds.w, display_bounds.h);
 }
 
-const bool Object::in() {
+bool Object::in() const {
 	return in_flag;
 }
 
-const bool Object::out() {
+bool Object::out() const {
 	return out_flag;
 }
 
-const bool Object::inside() {
+bool Object::inside() const {
 	return inside_flag;
 }
 
-const bool Object::inside(float x, float y) {
+bool Object::inside(float x, float y) const {
 	return (x > form.left_border && x < form.right_border &&
 		y > form.upper_border && y < form.lower_border);
 }
@@ -44,10 +44,6 @@ void Object::set_render_draw_color(rgba _rgba) {
 
 rgba Object::pack_uint8(uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
 	return rgba{r, g, b, a};
-}
-
-void Object::load_and_set_texture(std::string file_name, int frame_w_px, int frame_h_px) {
-	texture_handler->load_and_set_texture(file_name, frame_w_px, frame_h_px);
 }
 
 void Object::set_texture(SDL_Texture* texture, int frame_w_px, int frame_h_px) {
@@ -140,7 +136,7 @@ void Object::set_form(const object_form& form, bool default_values)
 	set_frame_size(multiplier);
 }
 
-const object_form& Object::get_form() {
+const object_form& Object::get_form() const {
 	return form;
 }
 

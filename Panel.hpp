@@ -13,9 +13,9 @@ public:
 		char direction = 'h', float object_distance = 20, 
 		float distance_of_border_w = 20, float distance_of_border_h = 20);
 
-	virtual void event_process(SDL_Event* event) override;
+	void event_process(SDL_Event* event) override;
 
-	virtual void iterate() override;
+	void iterate() override;
 
 	//Добавить объект в панель.
 	void add(std::shared_ptr<Object> object);

@@ -4,11 +4,7 @@
 #include <vector>
 #include <memory>
 
-
 class Object;
-class Panel;
-class LeftPanel;
-
 
 class MainProcess
 {

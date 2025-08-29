@@ -23,9 +23,6 @@ public:
 	//»тераци€.
 	void process();
 
-	// «агружает и устанавливает изображение по указанному пути.
-	void load_and_set_texture(std::string file_name, int frame_w_px, int frame_h_px);
-
 	// ”станавливает загрущенное изображение.
 	void set_texture(SDL_Texture* texture, int frame_w_px, int frame_h_px);
 

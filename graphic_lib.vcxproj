@@ -135,6 +135,7 @@
     <ClCompile Include="MainProcess.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Panel.cpp" />
+    <ClCompile Include="Person.cpp" />
     <ClCompile Include="PressButtonGroup.cpp" />
     <ClCompile Include="Line.cpp" />
     <ClCompile Include="TextureHandler.cpp" />
@@ -146,6 +147,7 @@
     <ClInclude Include="MainProcess.hpp" />
     <ClInclude Include="Object.hpp" />
     <ClInclude Include="Panel.hpp" />
+    <ClInclude Include="Person.hpp" />
     <ClInclude Include="PressButtonGroup.hpp" />
     <ClInclude Include="Line.hpp" />
     <ClInclude Include="TextureHandler.hpp" />

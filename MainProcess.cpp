@@ -21,8 +21,10 @@ MainProcess::MainProcess(SDL_Renderer* render)
 		button->set_pressing_flag(true);
 		panel->add(button);
 	}
-	/*auto line = std::make_shared<Line>("[ÏÐÈÂÅÒ] ", render, 10, 200, 0.3);
-	objects.push_back(line);*/
+	
+	Line::set_default_font(render);
+	auto line = std::make_shared<Line>("[ÏÐÈÂÅÒ] ", render, 10, 200, 0.3);
+	objects.push_back(line);
 }
 
 void MainProcess::iterate() {

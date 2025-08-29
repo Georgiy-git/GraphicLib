@@ -14,7 +14,7 @@ void TextureHandler::start_anim(int num_anim, int shot_of_anim, int delay_ms)
 	show_texture_frame.x = 0;
 	show_texture_frame.y = num_anim * show_texture_frame.h;
 	shot_num = 0;
-	this->shot_of_anim = shot_of_anim;
+	this->shot_of_anim = shot_of_anim - 1;
 	delay = std::chrono::milliseconds(delay_ms);
 }
 
@@ -45,14 +45,6 @@ void TextureHandler::process()
 	SDL_RenderTexture(render, texture, 
 		&show_texture_frame, &size_texture_frame);
 }
-
-
-void TextureHandler::load_and_set_texture(std::string file_name, int frame_w_px, int frame_h_px)
-{
-	texture = IMG_LoadTexture(render, file_name.c_str());
-	set_texture(texture, frame_w_px, frame_h_px);
-}
-
 
 void TextureHandler::set_texture(SDL_Texture* texture, int frame_w_px, int frame_h_px)
 {

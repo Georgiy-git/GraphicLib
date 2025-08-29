@@ -37,9 +37,6 @@ public:
 	//Возвращает размер экрана.
 	static std::pair<int, int> get_display_size();
 
-	// Загружает и устанавливает изображение по указанному пути.
-	void load_and_set_texture(std::string file_name, int frame_w_px, int frame_h_px);
-
 	// Устанавливает загрущенное изображение.
 	void set_texture(SDL_Texture* texture, int frame_w_px, int frame_h_py);
 
@@ -64,16 +61,16 @@ public:
 	//При default_values = true нулевые значения переданной структуры учитываться не будут.
 	void set_form(const object_form& form, bool default_values = true);
 
-	const object_form& get_form();
+	const object_form& get_form() const;
 
 	//Вход курсора мыши в область объекта.
-	const bool in();
+	bool in() const;
 
 	//Выход курсора мыши из области объекта.
-	const bool out();
+	bool out() const;
 
 	//Возвращает true, если курсор внутри области объекта.
-	const bool inside();
+	bool inside() const;
 
 	//num_anim - номер ряда
 	//shot_of_anim - количество кадров в анимации
@@ -83,7 +80,7 @@ public:
 protected:
 	object_form form;
 
-	virtual const bool inside(float x, float y);
+	virtual bool inside(float x, float y) const;
 
 	void set_render_draw_color(rgba _rgba);
 	static rgba pack_uint8(uint8_t r, uint8_t g, uint8_t b, uint8_t a);
