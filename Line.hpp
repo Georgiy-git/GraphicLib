@@ -10,17 +10,22 @@
 class Line : public Panel
 {
 public:
-	Line(const std::string& line, SDL_Renderer* render, float corner_x, float corner_y,
-		float multiplier = 1,
-		float distance = 5, float distance_of_border_w = 20, float distance_of_border_h = 20);
-
-	void event_process(SDL_Event* event) override;
+	Line(
+		const std::string& line, 
+		SDL_Renderer* render, 
+		float multiplier = 0.3, 
+		float corner_x = 0, 
+		float corner_y = 0, 
+		float object_distance = 3,
+		float distance_of_border_w = 0, 
+		float distance_of_border_h = 0
+	);
 
 	// Установить текст, стерев старый.
-	void set_text(const std::string& text);
+	void set_text(const std::string text);
 
 	// Добавить текст к уже существующему.
-	void append_text(const std::string& text);
+	void append_text(const std::string text);
 
 	// Получить текст строки.
 	const std::string& get_text();
@@ -36,13 +41,23 @@ public:
 	// Установить специальный шрифт для этой строки.
 	void set_special_font(SDL_Texture* font);
 
-private:
+	// Размер текста.
+	const float& get_multiplier();
+
+	void remove(int index) override;
+
+	void pop_back() override;
+
+	void clear() override;
+
+protected:
+	std::string text;
+
 	static inline SDL_Texture* font;
 
 	SDL_Texture* special_font = nullptr;
 
-	float multiplier;
-	std::string line;
+	float multiplier = 0.5;
 	int symbol_w = 60;
 	int symbol_h = 100;
 };

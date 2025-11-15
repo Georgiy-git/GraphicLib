@@ -7,42 +7,64 @@
 class Panel : public Object
 {
 public:
-	//direction - положение панели (гаризонтальное - 'h', вертикальное - 'v').
-	//object_distance - дистанция между объектами.
-	Panel(SDL_Renderer* render, float corner_x, float corner_y,
-		char direction = 'h', float object_distance = 20, 
-		float distance_of_border_w = 20, float distance_of_border_h = 20);
+	// direction - положение панели (горизонтальное - 'h', вертикальное - 'v').
+	Panel(
+		SDL_Renderer* render, 
+		char direction = 'h', 
+		float corner_x = 0, 
+		float corner_y = 0,
+		float object_distance = 20, 
+		float distance_of_border_w = 20, 
+		float distance_of_border_h = 20
+	);
 
-	void event_process(SDL_Event* event) override;
+	// Примечание: события обрабатываются также для каждого объекта в панели.
+	void process_event(SDL_Event* event) override;
 
+	// Примечание: итерации выполняются также для каждого объекта в панели.
 	void iterate() override;
 
-	//Добавить объект в панель.
+	// Добавить объект в панель.
 	void add(std::shared_ptr<Object> object);
 
-	//Удалить объект из панели.
-	void remove(int index);
+	// Удалить объект из панели.
+	virtual void remove(int index);
 
-	//Удалить последний объект из панели.
-	void pop_back();
+	// Удалить последний объект из панели.
+	virtual void pop_back();
 
-	//Удалить все элементы вектора.
-	void clear();
+	// Удалить все элементы вектора.
+	virtual void clear();
 
-	std::vector<std::shared_ptr<Object>> objects;
-
-	//Количество объектов в панели.
+	// Количество объектов в панели.
 	size_t objects_count();
 
-	//Найти объект с наибольшей высотой.
-	float find_max_height();
+	// Расстояние между объектами.
+	const float& get_object_distance();
 
-	//Найти объект с наибольшей шириной.
-	float find_max_width();
+	// Расстояние крайних объектов от левой и правой границы.
+	const float& get_distance_of_border_w();
+
+	// Расстояние крайних объектов от верхней и нижней границы.
+	const float& get_distance_of_border_h();
 
 protected:
-	//Выровнять размер панели под объекты.
-	void set_size_for_objects();
+	// Найти объект с наибольшей высотой.
+	float find_max_height();
+
+	// Найти объект с наибольшей шириной.
+	float find_max_width();
+
+	void set_form(const object_form& form, bool default_values = true) override;
+
+	// Выровнять размер панели под объекты.
+	void adjust_panel();
+
+	// Установить нужное положение объекта для нахождения в панели.
+	void adjust_object(Object* object);
+
+	// Контейнер всех объектов в панели.
+	std::vector<std::shared_ptr<Object>> objects;
 
 private:
 	float distance_of_border_w;

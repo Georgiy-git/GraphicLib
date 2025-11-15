@@ -7,7 +7,7 @@ void PressButtonGroup::event_process(SDL_Event* event)
 	if (event->type == SDL_EVENT_MOUSE_BUTTON_DOWN || 
 		event->type == SDL_EVENT_MOUSE_BUTTON_UP) {
 		for (auto button : buttons) {
-			if (button->inside() && button != pressing) {
+			if (button->cursor_inside() && button != pressing) {
 				press(button);
 				break;
 			}

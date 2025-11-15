@@ -1,65 +1,64 @@
-
 #include "TextureHandler.hpp"
-
+#include "Object.hpp"
 
 TextureHandler::TextureHandler(object_form* form, SDL_Renderer* render)
-	: form{ form }, render{render} {
+	: form{ form }, render{render} 
+{
+
 }
 
-TextureHandler::~TextureHandler() { }
-
-void TextureHandler::start_anim(int num_anim, int shot_of_anim, int delay_ms)
+void TextureHandler::start_animation(int num, int shot, int delay_ms)
 {
-	is_plaing = true;
-	show_texture_frame.x = 0;
-	show_texture_frame.y = num_anim * show_texture_frame.h;
-	shot_num = 0;
-	this->shot_of_anim = shot_of_anim - 1;
+	is_playing = true;
+	show_rect.x = 0;
+	show_rect.y = num * show_rect.h;
+	this->shot_num = 0;
+	this->shot_of_anim = shot - 1;
 	delay = std::chrono::milliseconds(delay_ms);
 }
 
 void TextureHandler::change_show_rect(int column, int row)
 {
-	show_texture_frame.x = show_texture_frame.w * column;
-	show_texture_frame.y = show_texture_frame.h * row;
+	show_rect.x = show_rect.w * column;
+	show_rect.y = show_rect.h * row;
 }
 
-void TextureHandler::process()
+void TextureHandler::iterate()
 {
 	if (texture == nullptr) return;
 
-	if (is_plaing) {
-		if (std::chrono::steady_clock::now() - anim_start > delay) {
+	if (is_playing) {
+		if (std::chrono::steady_clock::now() - animation_start > delay) {
 			if (shot_num < shot_of_anim) {
-				show_texture_frame.x += show_texture_frame.w;
+				show_rect.x += show_rect.w;
 				shot_num++;
-				anim_start = std::chrono::steady_clock::now();
+				animation_start = std::chrono::steady_clock::now();
 			}
 			else {
-				is_plaing = false;
+				is_playing = false;
 				shot_num = 0;
 			}
 		}
 	}
 
 	SDL_RenderTexture(render, texture, 
-		&show_texture_frame, &size_texture_frame);
+		&show_rect, &size_rect);
 }
 
 void TextureHandler::set_texture(SDL_Texture* texture, int frame_w_px, int frame_h_px)
 {
 	this->texture = texture;
 	set_object_size();
-	show_texture_frame.x = 0;
-	show_texture_frame.y = 0;
-	show_texture_frame.w = (float)frame_w_px;
-	show_texture_frame.h = (float)frame_h_px;
+	show_rect.x = 0;
+	show_rect.y = 0;
+	show_rect.w = (float)frame_w_px;
+	show_rect.h = (float)frame_h_px;
 }
 
 void TextureHandler::set_object_size()
 {
-	size_texture_frame.x = form->corner_x;
-	size_texture_frame.y = form->corner_y;
-	size_texture_frame.w = form->width;
-	size_texture_frame.h = form->height;
+	size_rect.x = form->corner_x;
+	size_rect.y = form->corner_y;
+	size_rect.w = form->width;
+	size_rect.h = form->height;
 }

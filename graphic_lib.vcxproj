@@ -131,25 +131,26 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Button.cpp" />
+    <ClCompile Include="Line.cpp" />
+    <ClCompile Include="LineEdit.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainProcess.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Panel.cpp" />
-    <ClCompile Include="Person.cpp" />
     <ClCompile Include="PressButtonGroup.cpp" />
-    <ClCompile Include="Line.cpp" />
     <ClCompile Include="TextureHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Button.hpp" />
     <ClInclude Include="EnumProcesses.hpp" />
     <ClInclude Include="Font.hpp" />
+    <ClInclude Include="Keyboard.hpp" />
+    <ClInclude Include="Line.hpp" />
+    <ClInclude Include="LineEdit.hpp" />
     <ClInclude Include="MainProcess.hpp" />
     <ClInclude Include="Object.hpp" />
     <ClInclude Include="Panel.hpp" />
-    <ClInclude Include="Person.hpp" />
     <ClInclude Include="PressButtonGroup.hpp" />
-    <ClInclude Include="Line.hpp" />
     <ClInclude Include="TextureHandler.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
