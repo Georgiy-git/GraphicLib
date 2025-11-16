@@ -61,7 +61,6 @@ void LineEdit::process_event(SDL_Event* event)
 					pop_back();
 					focus_flag = !focus_flag;
 				}
-				std::cout << get_text();
 			}
 			else if (objects_count() < max) {
 				std::string text;
@@ -111,6 +110,11 @@ void LineEdit::set_form(const object_form& form, bool default_values)
 void LineEdit::set_background_color(rgb color)
 {
 	background_color = color;
+}
+
+bool LineEdit::has_focus()
+{
+	return focus;
 }
 
 bool LineEdit::inside(float x, float y) const

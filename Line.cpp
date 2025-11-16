@@ -72,6 +72,7 @@ void Line::remove(int index)
 
 void Line::pop_back()
 {
+	if (objects_count() == 0) return;
 	Panel::pop_back();
 	text.pop_back();
 }

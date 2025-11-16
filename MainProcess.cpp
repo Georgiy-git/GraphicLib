@@ -1,14 +1,14 @@
 #include "MainProcess.hpp"
 #include "Button.hpp"
 #include "Panel.hpp"
-#include "Line.hpp"
 #include "LineEdit.hpp"
 
-MainProcess::MainProcess(SDL_Renderer* render)
-	: render{ render }
+MainProcess::MainProcess(SDL_Renderer* render, NetworkHandler* networkHandler)
+	: render{ render }, 
+	networkHandler(networkHandler),
+	tp(std::chrono::steady_clock::now())
 {
 	auto* texture = IMG_LoadTexture(render, "textures\\gray_button.svg");
-	Line::set_default_font(render);
 
 	auto line1 = std::make_shared<Line>("ПАНЕЛЬ УПРАВЛЕНИЯ", render, 0.5, 50, 50, 5);
 	objects.push_back(line1);
@@ -19,31 +19,53 @@ MainProcess::MainProcess(SDL_Renderer* render)
 	auto panel2 = std::make_shared<Panel>(render, 'h', 0, 0, 10, 0, 0);
 	panel1->add(panel2);
 
-	auto line2 = std::make_shared<Line>("Сервер: ", render);
+	auto line2 = std::make_shared<Line>("Сервер:", render);
 	panel2->add(line2);
 
 	auto lineEdit1 = std::make_shared<LineEdit>(render, 16, 0.3, 0, 0, 1, 20);
+	_lineEdit1 = lineEdit1.get();
 	lineEdit1->set_text("127.0.0.1");
 	panel2->add(lineEdit1);
 
 	auto line3 = std::make_shared<Line>("Состояние: не отвечает", render);
+	_line3 = line3.get();
 	panel1->add(line3);
 
 	auto line4 = std::make_shared<Line>("Подключенные системы: 0", render);
 	panel1->add(line4);
+
+	auto object1 = std::make_shared<Object>(render, 0, 0, 0, 50);
+	panel1->add(object1);
+
+	auto line5 = std::make_shared<Line>("Послать команду вручную:", render);
+	panel1->add(line5);
+
+	auto lineEdit2 = std::make_shared<LineEdit>(render, 25, 0.3, 0, 0, 3, 10);
+	panel1->add(lineEdit2);
+
+	networkHandler->endpoint =
+		tcp::endpoint(ba::ip::make_address_v4(_lineEdit1->get_text()), 53888);
+	networkHandler->async_connect();
 }
 
-void MainProcess::iterate() {
+void MainProcess::iterate() 
+{
 	for (auto object : objects) {
 		object->iterate();
 	}
+
+	if (!networkHandler->connected && connected) {
+		connected = false;
+		_line3->set_text("Соединение: не отвечает");
+	}
+	else if (networkHandler->connected && !connected) {
+		connected = true;
+		_line3->set_text("Соединение: установлено");
+	}
 }
 
-void MainProcess::event(SDL_Event* event) {
-	for (auto object : objects) {
-		object->process_event(event);
-	}
-
+void MainProcess::event(SDL_Event* event) 
+{
 	if (event->type == SDL_EVENT_MOUSE_MOTION) {
 		
 	}
@@ -52,5 +74,18 @@ void MainProcess::event(SDL_Event* event) {
 	}
 	else if (event->type == SDL_EVENT_MOUSE_BUTTON_UP) {
 
+	}
+	else if (event->type == SDL_EVENT_KEY_DOWN) {
+		if (event->key.scancode == SDL_SCANCODE_RETURN && _lineEdit1->has_focus()) {
+			if (networkHandler->socket.is_open()) networkHandler->socket.close();
+			auto text = _lineEdit1->get_text();
+			if (text.back() == '|') text.pop_back();
+			networkHandler->endpoint = 
+				tcp::endpoint(ba::ip::make_address_v4(text), 53888);
+		}
+	}
+
+	for (auto object : objects) {
+		object->process_event(event);
 	}
 }

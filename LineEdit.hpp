@@ -26,6 +26,8 @@ public:
 
 	void set_background_color(rgb color);
 
+	bool has_focus();
+
 private:
 	bool inside(float x, float y) const override;
 

@@ -44,8 +44,10 @@ public:
 	// Размер текста.
 	const float& get_multiplier();
 
+	// Удалить символ строки по индексу.
 	void remove(int index) override;
 
+	// Удалить последний символ строки.
 	void pop_back() override;
 
 	void clear() override;
