@@ -83,6 +83,16 @@ void Line::clear()
 	text.clear();
 }
 
+int Line::get_symbol_w()
+{
+	return symbol_w;
+}
+
+int Line::get_symbol_h()
+{
+	return symbol_h;
+}
+
 const std::string& Line::get_text() 
 {
 	return text;

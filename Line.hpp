@@ -52,6 +52,12 @@ public:
 
 	void clear() override;
 
+	// Ширина символа.
+	int get_symbol_w();
+
+	// Высота символа.
+	int get_symbol_h();
+
 protected:
 	std::string text;
 

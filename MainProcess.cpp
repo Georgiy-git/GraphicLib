@@ -79,7 +79,6 @@ void MainProcess::event(SDL_Event* event)
 		if (event->key.scancode == SDL_SCANCODE_RETURN && _lineEdit1->has_focus()) {
 			if (networkHandler->socket.is_open()) networkHandler->socket.close();
 			auto text = _lineEdit1->get_text();
-			if (text.back() == '|') text.pop_back();
 			networkHandler->endpoint = 
 				tcp::endpoint(ba::ip::make_address_v4(text), 53888);
 		}
