@@ -24,8 +24,19 @@ MainProcess::MainProcess(SDL_Renderer* render, NetworkHandler* networkHandler)
 
 	auto lineEdit1 = std::make_shared<LineEdit>(render, 16, 0.3, 0, 0, 1, 20);
 	_lineEdit1 = lineEdit1.get();
-	lineEdit1->set_text("127.0.0.1");
+	lineEdit1->set_text("192.1.1.5");
 	panel2->add(lineEdit1);
+
+	auto panel3 = std::make_shared<Panel>(render, 'h', 0, 0, 20, 0, 0);
+	panel1->add(panel3);
+
+	auto line6 = std::make_shared<Line>("Порт:", render);
+	panel3->add(line6);
+
+	auto lineEdit3 = std::make_shared<LineEdit>(render, 5);
+	_lineEdit3 = lineEdit3.get();
+	lineEdit3->set_text("14000");
+	panel3->add(lineEdit3);
 
 	auto line3 = std::make_shared<Line>("Состояние: не отвечает", render);
 	_line3 = line3.get();
@@ -41,10 +52,10 @@ MainProcess::MainProcess(SDL_Renderer* render, NetworkHandler* networkHandler)
 	panel1->add(line5);
 
 	auto lineEdit2 = std::make_shared<LineEdit>(render, 25, 0.3, 0, 0, 3, 10);
+	_lineEdit2 = lineEdit2.get();
 	panel1->add(lineEdit2);
 
-	networkHandler->endpoint =
-		tcp::endpoint(ba::ip::make_address_v4(_lineEdit1->get_text()), 53888);
+	networkHandler->change_endpoint(_lineEdit1->get_text(), _lineEdit3->get_text());
 	networkHandler->async_connect();
 }
 
@@ -76,11 +87,25 @@ void MainProcess::event(SDL_Event* event)
 
 	}
 	else if (event->type == SDL_EVENT_KEY_DOWN) {
-		if (event->key.scancode == SDL_SCANCODE_RETURN && _lineEdit1->has_focus()) {
+		if (event->key.scancode == SDL_SCANCODE_RETURN && 
+			(_lineEdit1->has_focus() || _lineEdit3->has_focus())) 
+		{
 			if (networkHandler->socket.is_open()) networkHandler->socket.close();
 			auto text = _lineEdit1->get_text();
-			networkHandler->endpoint = 
-				tcp::endpoint(ba::ip::make_address_v4(text), 53888);
+			networkHandler->change_endpoint(_lineEdit1->get_text(), _lineEdit3->get_text());
+		}
+		else if (event->key.scancode == SDL_SCANCODE_RETURN && _lineEdit2->has_focus()) {
+			if (networkHandler->connected) {
+				std::string command = _lineEdit2->get_text();
+				command = NetworkHandler::from_int(command.size()) + command;
+				ba::async_write(networkHandler->socket, ba::buffer(command.data(), command.size()),
+					[=](error_code ec, size_t bytes){
+						if (ec) {
+							std::cout << ec.message() << std::endl;
+						}
+						_lineEdit2->clear();
+					});
+			}
 		}
 	}
 

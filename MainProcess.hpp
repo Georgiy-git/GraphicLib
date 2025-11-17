@@ -4,6 +4,7 @@
 #include <vector>
 #include <memory>
 #include <thread>
+#include <string>
 #include "Object.hpp"
 #include "NetworkHandler.hpp"
 #include "Line.hpp"
@@ -23,6 +24,8 @@ private:
 	std::vector<std::shared_ptr<Object>> objects;
 	NetworkHandler* networkHandler;
 	LineEdit* _lineEdit1;
+	LineEdit* _lineEdit2;
+	LineEdit* _lineEdit3;
 	Line* _line3;
 	bool connected = false;
 	std::chrono::steady_clock::time_point tp;

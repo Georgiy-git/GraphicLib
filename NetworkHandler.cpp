@@ -50,3 +50,16 @@ void NetworkHandler::async_connect()
 			}
 		});
 }
+
+std::string NetworkHandler::from_int(int x)
+{
+	return std::string(reinterpret_cast<const char*>(&x), sizeof(x));
+}
+
+void NetworkHandler::change_endpoint(const std::string& addr, const std::string& port)
+{
+	auto _addr = ba::ip::make_address_v4(addr);
+	int _port = std::stoi(port);
+	endpoint = tcp::endpoint(_addr, _port);
+	
+}

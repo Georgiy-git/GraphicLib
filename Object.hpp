@@ -67,9 +67,6 @@ public:
 	void set_x(float x);
 	void set_y(float y);
 
-	void set_width(float width);
-	void set_height(float height);
-
 	const object_form& get_form() const;
 
 	// Вход курсора мыши в область объекта.
@@ -81,17 +78,16 @@ public:
 	// Возвращает true, если курсор внутри области объекта.
 	bool cursor_inside() const;
 
-protected:
 	// При default_values = true нулевые значения переданной структуры учитываться не будут.
 	virtual void set_form(const object_form& form, bool default_values = true);
 
-	object_form form;
-
+protected:
 	virtual bool inside(float x, float y) const;
 
 	SDL_Renderer* render = nullptr;
 
 private:
+	object_form form;
 	bool inside_flag = false;
 	bool in_flag = false;
 	bool out_flag = false;

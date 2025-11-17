@@ -2,4 +2,5 @@ x64
 .vs
 SDL3.dll
 SDL3_image.dll
-
+sqlite3.c
+sqlite3.h

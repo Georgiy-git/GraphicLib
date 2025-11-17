@@ -57,16 +57,16 @@ void Button::set_pressing_flag(bool flag)
 void Button::iterate()
 {
 	Object::iterate();
-	if (line.has_value()) {
+	/*if (line.has_value()) {
 		line->iterate();
-	}
+	}*/
 }
 
-void Button::set_line(const std::string& line)
-{
-	this->line = std::make_optional<Line>(line, render);
-	this->line->set_x(get_form().corner_x + this->line->get_distance_of_border_w());
-	this->line->set_y(get_form().corner_y + this->line->get_distance_of_border_h());
-	set_width(this->line->get_distance_of_border_w() * 2 + this->line->get_form().width);
-	set_height(this->line->get_distance_of_border_h() * 2 + this->line->get_form().height);
-}
+//void Button::set_line(const std::string& line)
+//{
+//	this->line = std::make_optional<Line>(line, render);
+//	this->line->set_x(get_form().corner_x + this->line->get_distance_of_border_w());
+//	this->line->set_y(get_form().corner_y + this->line->get_distance_of_border_h());
+//	set_width(this->line->get_distance_of_border_w() * 2 + this->line->get_form().width);
+//	set_height(this->line->get_distance_of_border_h() * 2 + this->line->get_form().height);
+//}

@@ -51,8 +51,7 @@ void LineEdit::process_event(SDL_Event* event)
 	else if (event->type == SDL_EVENT_KEY_DOWN) {
 		if (focus) {
 			if (event->key.scancode == SDL_SCANCODE_BACKSPACE) {
-				line.pop_back();
-				adjust_cursor();
+				pop_back();
 			} 
 			else if (event->key.scancode == SDL_SCANCODE_RETURN) {
 				focus = !focus;
@@ -60,8 +59,7 @@ void LineEdit::process_event(SDL_Event* event)
 			else if (line.objects_count() < max) {
 				std::string text;
 				text += get_char(event);
-				line.append_text(text);
-				adjust_cursor();
+				append_text(text);
 			}
 		}
 	}
@@ -167,16 +165,19 @@ const float& LineEdit::get_multiplier()
 void LineEdit::remove(int index)
 {
 	line.remove(index);
+	adjust_cursor();
 }
 
 void LineEdit::pop_back()
 {
 	line.pop_back();
+	adjust_cursor();
 }
 
 void LineEdit::clear()
 {
 	line.clear();
+	adjust_cursor();
 }
 
 int LineEdit::get_symbol_w()

@@ -39,10 +39,10 @@ public:
 	void iterate() override;
 
 	// Установить надпись поверх кнопки.
-	void set_line(const std::string& line);
+	//void set_line(const std::string& line);
 
 	// Надпись поверх кнопки.
-	std::optional<Line> line;
+	//std::optional<Line> line;
 	
 private:
 	bool pressing = false;

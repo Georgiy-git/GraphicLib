@@ -18,6 +18,11 @@ public:
 	void async_read();
 	void async_connect();
 
+	// Преобразовать int в std::string без изменения информации.
+	static std::string from_int(int x);
+
+	void change_endpoint(const std::string& addr, const std::string& port);
+
 	ba::io_context context;
 	tcp::socket socket;
 	ba::executor_work_guard<ba::io_context::executor_type> work;

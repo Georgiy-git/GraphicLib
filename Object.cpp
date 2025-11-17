@@ -116,16 +116,6 @@ void Object::set_y(float y)
 	set_form({ .corner_y = y });
 }
 
-void Object::set_width(float width)
-{
-	set_form({ .width = width });
-}
-
-void Object::set_height(float height)
-{
-	set_form({ .height = height });
-}
-
 void Object::render_frame(bool flag) 
 {
 	flag_render_frame = flag;
