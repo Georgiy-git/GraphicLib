@@ -89,7 +89,7 @@ SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event)
 	}
 
 	for (auto object : objects) {
-		object->process_event(event);
+		object->process(event);
 	}
 
 	if (event->type == SDL_EVENT_MOUSE_MOTION) {

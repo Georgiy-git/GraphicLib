@@ -7,28 +7,19 @@
 
 /*
 Требование к текстуре: соотношение 1 высота к 2 ширина,
-одна текстура из двух составляющих:
-слева кнопка до нажатия, справа - после нажатия.
+одна текстура из двух составляющих: слева кнопка до нажатия, справа - после нажатия.
 */
 
 class Button : public Object
 {
+	friend class PressButtonGroup;
+
 public:
-	Button(
-		SDL_Renderer* render, 
-		float corner_x, 
-		float corner_y, 
-		float width, 
-		float height
-	);
+	using Object::Object;
+	void process(SDL_Event* event) override;
+	void iterate() override;
 
-	void process_event(SDL_Event* event) override;
-
-	// Установить зажатие.
-	void remove_pressing();
-
-	//Снять зажатие.
-	void set_pressing();
+	bool pressed();
 
 	// true, если включена функция зажатия.
 	bool get_pressing_flag();
@@ -36,15 +27,19 @@ public:
 	// Переключить опцию зажатия.
 	void set_pressing_flag(bool flag);
 
-	void iterate() override;
-
 	// Установить надпись поверх кнопки.
 	//void set_line(const std::string& line);
 
 	// Надпись поверх кнопки.
-	//std::optional<Line> line;
+	std::optional<Line> line;
 	
 private:
+	//Снять зажатие.
+	void remove_pressing();
+
+	// Установить зажатие.
+	void set_pressing();
+
 	bool pressing = false;
 	bool flag_pressing = false;
 };

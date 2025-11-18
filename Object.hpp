@@ -6,32 +6,31 @@
 #include <string>
 #include <memory>
 #include <iostream>
+#include <optional>
 
 #include "TextureHandler.hpp"
 
 using rgb = std::array<uint8_t, 3>;
 
-struct object_form {
-	float
-	corner_x,
-	corner_y,
-	width,
-	height,
-	left_border,
-	right_border,
-	upper_border,
-	lower_border;
-};
+/*
+Примечания:
+1)  Любое изменение формы или местоположения объекта должно сопровождаться
+	выравниванием текстуры и границ под действительные форму и местоположение объекта.
+2)  У каждого объекта должны вызываться функции iterate() и process()
+	в соответствующих функциях процесса.
+*/
+
 
 class Object //Базовый класс для всех графических объектов.
 {
 	friend class TextureHandler;
 
 public:
-	// Соответственно init, iter, event и quit.
-	Object(SDL_Renderer* render, float corner_x, float corner_y, float width, float height);
+	Object(SDL_Renderer* renderer, float x, float y, float width, float height);
+	Object(SDL_Renderer* renderer, float width, float height);
+	Object(SDL_Renderer* renderer);
 	virtual void iterate();
-	virtual void process_event(SDL_Event* event);
+	virtual void process(SDL_Event* event);
 	virtual ~Object();
 
 	// Возвращает размер экрана.
@@ -51,23 +50,8 @@ public:
 	// Установить отладочную рамку.
 	void render_frame(bool flag);
 
-	// Установка цвета отладочной рамки.
 	void set_frame_color(uint8_t r, uint8_t g, uint8_t b);
-
-	// Задаёт размер рамки кратности x.
-	void set_frame_size(float x = 1);
-
-	// Смещение на x по горизонтали.
-	void add_x(float x);
-
-	// Смещение на y по вертикали.
-	void add_y(float y);
-
-	// Установить местоположение на экране.
-	void set_x(float x);
-	void set_y(float y);
-
-	const object_form& get_form() const;
+	void set_frame_multiplier(float x = 1.0);
 
 	// Вход курсора мыши в область объекта.
 	bool in() const;
@@ -78,16 +62,45 @@ public:
 	// Возвращает true, если курсор внутри области объекта.
 	bool cursor_inside() const;
 
-	// При default_values = true нулевые значения переданной структуры учитываться не будут.
-	virtual void set_form(const object_form& form, bool default_values = true);
+	void set_x(float x);
+	void set_y(float y);
+	float get_x();
+	float get_y();
+	void add_x(float x);
+	void add_y(float y);
+
+	void set_width(float width);
+	void set_height(float height);
+	float get_width();
+	float get_height();
+
+	virtual void change(
+		std::optional<float> x,
+		std::optional<float> y,
+		std::optional<float> width,
+		std::optional<float> height
+	);
 
 protected:
+	virtual void adjust();
+
+	void adjust_frame();
+
 	virtual bool inside(float x, float y) const;
 
-	SDL_Renderer* render = nullptr;
+	SDL_Renderer* renderer = nullptr;
 
 private:
-	object_form form;
+	float
+		x = 0,
+		y = 0,
+		width = 0,
+		height = 0,
+		left_border,
+		right_border,
+		upper_border,
+		lower_border;
+
 	bool inside_flag = false;
 	bool in_flag = false;
 	bool out_flag = false;
@@ -99,6 +112,6 @@ private:
 
 	bool flag_render_frame = false;
 	rgb frame_color = { 0, 255, 0 };
-	float multiplier;
+	float multiplier = 1;
 	SDL_FRect frame;
 };

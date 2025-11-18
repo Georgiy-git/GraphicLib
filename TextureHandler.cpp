@@ -1,8 +1,10 @@
 #include "TextureHandler.hpp"
 #include "Object.hpp"
 
-TextureHandler::TextureHandler(object_form* form, SDL_Renderer* render)
-	: form{ form }, render{render} 
+
+
+TextureHandler::TextureHandler(SDL_Renderer* renderer, float& x, float& y, float& width, float& height)
+	: renderer(renderer), x(x), y(y), width(width), height(height)
 {
 
 }
@@ -41,24 +43,23 @@ void TextureHandler::iterate()
 		}
 	}
 
-	SDL_RenderTexture(render, texture, 
-		&show_rect, &size_rect);
+	SDL_RenderTexture(renderer, texture, &show_rect, &size_rect);
 }
 
 void TextureHandler::set_texture(SDL_Texture* texture, int frame_w_px, int frame_h_px)
 {
 	this->texture = texture;
-	set_object_size();
+	adjust();
 	show_rect.x = 0;
 	show_rect.y = 0;
 	show_rect.w = (float)frame_w_px;
 	show_rect.h = (float)frame_h_px;
 }
 
-void TextureHandler::set_object_size()
+void TextureHandler::adjust()
 {
-	size_rect.x = form->corner_x;
-	size_rect.y = form->corner_y;
-	size_rect.w = form->width;
-	size_rect.h = form->height;
+	size_rect.x = x;
+	size_rect.y = y;
+	size_rect.w = width;
+	size_rect.h = height;
 }

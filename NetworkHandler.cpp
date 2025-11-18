@@ -22,7 +22,9 @@ void NetworkHandler::async_read()
 			ba::async_read(socket, ba::buffer(message.data(), byte_count), [this](error_code ec, size_t bytes)
 				{
 					if (ec) {
+						connected = false;
 						std::cout << ec.message() << std::endl;
+						async_connect();
 						return;
 					}
 
@@ -58,8 +60,12 @@ std::string NetworkHandler::from_int(int x)
 
 void NetworkHandler::change_endpoint(const std::string& addr, const std::string& port)
 {
-	auto _addr = ba::ip::make_address_v4(addr);
-	int _port = std::stoi(port);
-	endpoint = tcp::endpoint(_addr, _port);
-	
+	try {
+		auto _addr = ba::ip::make_address_v4(addr);
+		int _port = std::stoi(port);
+		endpoint = tcp::endpoint(_addr, _port);
+	}
+	catch (...) {
+		
+	}
 }

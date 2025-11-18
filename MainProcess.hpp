@@ -9,6 +9,7 @@
 #include "NetworkHandler.hpp"
 #include "Line.hpp"
 #include "LineEdit.hpp"
+#include "Button.hpp"
 
 class MainProcess
 {
@@ -27,6 +28,7 @@ private:
 	LineEdit* _lineEdit2;
 	LineEdit* _lineEdit3;
 	Line* _line3;
+	Button* _button1;
 	bool connected = false;
 	std::chrono::steady_clock::time_point tp;
 };

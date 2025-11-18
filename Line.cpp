@@ -1,19 +1,17 @@
 #include "Line.hpp"
 #include "Font.hpp"
 
-Line::Line(
-	const std::string& line, 
-	SDL_Renderer* render, 
-	float multiplier, 
-	float corner_x, 
-	float corner_y,
-	float object_distance, 
-	float distance_of_border_w , 
-	float distance_of_border_h
-)
-	: Panel(render, 'h', corner_x, corner_y, object_distance, distance_of_border_w, distance_of_border_h), 
-	text{ text }, 
-	multiplier(multiplier)
+
+Line::Line(const std::string line, SDL_Renderer* renderer, float x, float y)
+	: Panel(renderer)
+{
+	set_x(x);
+	set_y(y);
+	set_text(line);
+}
+
+Line::Line(const std::string line, SDL_Renderer* renderer)
+	: Panel(renderer)
 {
 	set_text(line);
 }
@@ -28,7 +26,7 @@ void Line::append_text(const std::string text)
 {
 	this->text += text;
 	for (const auto& symbol : text) {
-		auto symb = std::make_shared<Object>(render, 0, 0, symbol_w * multiplier, symbol_h * multiplier);
+		auto symb = std::make_shared<Object>(renderer, 0, 0, symbol_w * multiplier, symbol_h * multiplier);
 		if (special_font != nullptr) symb->set_texture(special_font, symbol_w, symbol_h);
 		else symb->set_texture(font, symbol_w, symbol_h);
 		std::pair pos = Font[symbol];
@@ -60,6 +58,12 @@ const float& Line::get_multiplier()
 	return multiplier;
 }
 
+void Line::set_multiplier(float multiplier)
+{
+	this->multiplier = multiplier;
+	set_text(text);
+}
+
 void Line::remove(int index)
 {
 	Panel::remove(index);
@@ -72,7 +76,7 @@ void Line::remove(int index)
 
 void Line::pop_back()
 {
-	if (objects_count() == 0) return;
+	if (size() == 0) return;
 	Panel::pop_back();
 	text.pop_back();
 }

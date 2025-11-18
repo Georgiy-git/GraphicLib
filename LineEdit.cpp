@@ -1,45 +1,55 @@
 #include "LineEdit.hpp"
 #include "Keyboard.hpp"
 
-LineEdit::LineEdit(
-	SDL_Renderer* render,
-	size_t max,
-	float multiplier,
-	float corner_x,
-	float corner_y,
-	float object_distance,
-	float distance_of_border_w,
-	float distance_of_border_h,
-	rgb background_color
-)
-	: Panel(render, 'h', corner_x, corner_y, object_distance, 0, 0),
-	line("", 
-		render, 
-		multiplier, 
-		corner_x, 
-		corner_y, 
-		object_distance, 
-		distance_of_border_w, 
-		distance_of_border_h
-	),
-	cursor("", render, multiplier, corner_x, corner_y, 0, 0, 0),
-	background_color{ background_color }, 
-	delay(500), 
-	tp(std::chrono::steady_clock::now() - delay), 
-	max{ max }
+//LineEdit::LineEdit(
+//	SDL_Renderer* render,
+//	size_t max,
+//	float multiplier,
+//	float corner_x,
+//	float corner_y,
+//	float object_distance,
+//	float distance_of_border_w,
+//	float distance_of_border_h,
+//	rgb background_color
+//)
+//	: Panel(render, 'h', corner_x, corner_y, object_distance, 0, 0),
+//	line("", 
+//		render, 
+//		multiplier, 
+//		corner_x, 
+//		corner_y, 
+//		object_distance, 
+//		distance_of_border_w, 
+//		distance_of_border_h
+//	),
+//	cursor("", render, multiplier, corner_x, corner_y, 0, 0, 0),
+//	background_color{ background_color }, 
+//	delay(500), 
+//	tp(std::chrono::steady_clock::now() - delay), 
+//	max{ max }
+//{
+//	frame = {
+//		corner_x,
+//		corner_y,
+//		line.get_symbol_w() * line.get_multiplier() * max + line.get_distance() * (max - 1) +
+//		line.get_distance_of_border_w() * 2,
+//		float(line.get_symbol_h() * line.get_multiplier()) + line.get_distance_of_border_h() * 2
+//	};
+//}
+
+LineEdit::LineEdit(SDL_Renderer* renderer, size_t max, float x, float y)
+	: Panel(renderer, x, y), line("", renderer), cursor("", renderer)
 {
-	frame = {
-		corner_x,
-		corner_y,
-		line.get_symbol_w() * line.get_multiplier() * max + line.get_object_distance() * (max - 1) +
-		line.get_distance_of_border_w() * 2,
-		float(line.get_symbol_h() * line.get_multiplier()) + line.get_distance_of_border_h() * 2
-	};
 }
 
-void LineEdit::process_event(SDL_Event* event)
+LineEdit::LineEdit(SDL_Renderer* renderer, size_t max)
+	: Panel(renderer), line("", renderer), cursor("", renderer)
 {
-	Panel::process_event(event);
+}
+
+void LineEdit::process(SDL_Event* event)
+{
+	Panel::process(event);
 	if (event->type == SDL_EVENT_MOUSE_BUTTON_DOWN) {
 		if (cursor_inside()) {
 			focus = true;
@@ -56,7 +66,7 @@ void LineEdit::process_event(SDL_Event* event)
 			else if (event->key.scancode == SDL_SCANCODE_RETURN) {
 				focus = !focus;
 			}
-			else if (line.objects_count() < max) {
+			else if (line.size() < max) {
 				std::string text;
 				text += get_char(event);
 				append_text(text);
@@ -67,10 +77,10 @@ void LineEdit::process_event(SDL_Event* event)
 
 void LineEdit::iterate()
 {
-	SDL_SetRenderDrawColor(render, background_color[0], background_color[1], background_color[2], 255);
-	SDL_RenderFillRect(render, &frame);
-	SDL_SetRenderDrawColor(render, 0, 0, 0, 255);
-	SDL_RenderRect(render, &frame);
+	SDL_SetRenderDrawColor(renderer, background_color[0], background_color[1], background_color[2], 255);
+	SDL_RenderFillRect(renderer, &frame);
+	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+	SDL_RenderRect(renderer, &frame);
 	Panel::iterate();
 	if (focus) {
 		if (std::chrono::steady_clock::now() - tp > delay) {
@@ -89,23 +99,23 @@ void LineEdit::iterate()
 		focus_flag = !focus_flag;
 	}
 	line.iterate();
-	cursor.iterate();
+	//cursor.iterate();
 }
 
-void LineEdit::set_form(const object_form& form, bool default_values)
-{
-	Panel::set_form(form, default_values);
-	if (form.corner_x != 0) {
-		frame.x = form.corner_x;
-		line.set_x(form.corner_x);
-	}
-	if (form.corner_y != 0) {
-		float y = form.corner_y - float(line.get_symbol_h() * line.get_multiplier() * 0.2);
-		frame.y = y;
-		line.set_y(y);
-	}
-	adjust_cursor();
-}
+//void LineEdit::set_form(const object_form& form, bool default_values)
+//{
+//	Panel::set_form(form, default_values);
+//	if (form.corner_x != 0) {
+//		frame.x = form.corner_x;
+//		line.set_x(form.corner_x);
+//	}
+//	if (form.corner_y != 0) {
+//		float y = form.corner_y - float(line.get_symbol_h() * line.get_multiplier() * 0.2);
+//		frame.y = y;
+//		line.set_y(y);
+//	}
+//	adjust_cursor();
+//}
 
 void LineEdit::set_background_color(rgb color)
 {
@@ -192,7 +202,7 @@ int LineEdit::get_symbol_h()
 
 void LineEdit::adjust_cursor()
 {
-	cursor.set_x(line.get_form().corner_x + line.objects_count() * line.get_symbol_w() * line.get_multiplier() + 
-		line.get_object_distance() * (line.objects_count() - (objects_count() > 1 ? 1 : 0)) + line.get_distance_of_border_w());
-	cursor.set_y(line.get_form().corner_y + line.get_distance_of_border_h());
+	/*cursor.set_x(line.get_form().corner_x + line.size() * line.get_symbol_w() * line.get_multiplier() + 
+		line.get_distance() * (line.size() - (size() > 1 ? 1 : 0)) + line.get_distance_of_border_w());
+	cursor.set_y(line.get_form().corner_y + line.get_distance_of_border_h());*/
 }

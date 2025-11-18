@@ -1,30 +1,12 @@
 #include "Panel.hpp"
 
 
-Panel::Panel(
-	SDL_Renderer* render, 
-	char direction, 
-	float corner_x, 
-	float corner_y,
-	float object_distance, 
-	float distance_of_border_w, 
-	float distance_of_border_h
-)
-	: Object(render, corner_x, corner_y, 0, 0),
-	object_distance{ object_distance }, 
-	direction{ direction }, 
-	distance_of_border_w(distance_of_border_w), 
-	distance_of_border_h(distance_of_border_h)
+void Panel::process(SDL_Event* event)
 {
-	
-}
-
-void Panel::process_event(SDL_Event* event)
-{
-	Object::process_event(event);
+	Object::process(event);
 
 	for (auto object : objects) {
-		object->process_event(event);
+		object->process(event);
 	}
 }
 
@@ -39,8 +21,8 @@ void Panel::iterate()
 
 void Panel::add(std::shared_ptr<Object> object)
 {
-	adjust_object(object.get());
 	objects.push_back(object);
+	adjust_object(object.get());
 	adjust_panel();
 }
 
@@ -53,20 +35,20 @@ void Panel::remove(int index)
 		throw std::exception("Remove: there is no object by index.");
 
 	if (direction == 'h') {
-		float corner_x = (*object)->get_form().corner_x;
-		for (size_t i = index + 1; i < objects_count(); ++i) {
+		float corner_x = (*object)->get_x();
+		for (size_t i = index + 1; i < size(); ++i) {
 			objects[i]->set_x(corner_x);
-			corner_x += objects[i]->get_form().width + object_distance;
+			corner_x += objects[i]->get_width() + object_distance;
 		}
-		occupied_place -= (*object)->get_form().width + object_distance;
+		occupied_place -= (*object)->get_width() + object_distance;
 	}
 	else if (direction == 'v') {
-		float corner_y = (*object)->get_form().corner_y;
-		for (size_t i = index + 1; i < objects_count(); ++i) {
+		float corner_y = (*object)->get_y();
+		for (size_t i = index + 1; i < size(); ++i) {
 			objects[i]->set_y(corner_y);
-			corner_y += objects[i]->get_form().height + object_distance;
+			corner_y += objects[i]->get_height() + object_distance;
 		}
-		occupied_place -= (*object)->get_form().height + object_distance;
+		occupied_place -= (*object)->get_height() + object_distance;
 	}
 
 	objects.erase(object);
@@ -75,13 +57,13 @@ void Panel::remove(int index)
 
 void Panel::pop_back() 
 {
-	if (objects_count() == 0) return;
+	if (size() == 0) return;
 
 	if (direction == 'h') {
-		occupied_place -= objects.back()->get_form().width + object_distance;
+		occupied_place -= objects.back()->get_width() + object_distance;
 	}
 	else if (direction == 'v') {
-		occupied_place -= objects.back()->get_form().height + object_distance;
+		occupied_place -= objects.back()->get_height() + object_distance;
 	}
 	objects.pop_back();
 	adjust_panel();
@@ -99,24 +81,26 @@ void Panel::adjust_panel()
 	if (direction == 'h') {
 		w = distance_of_border_w * 2;
 		for (auto object : objects) {
-			w += object->get_form().width;
+			w += object->get_width();
 		}
-		if (objects_count() > 1) w += (objects_count() - 1) * object_distance;
+		if (size() > 1) w += (size() - 1) * object_distance;
 		h = distance_of_border_h * 2 + find_max_height();
-		set_form({ .width = w, .height = h });
+		set_width(w);
+		set_height(h);
 	}
 	else if (direction == 'v') {
 		float h = distance_of_border_h * 2;
 		for (auto object : objects) {
-			h += object->get_form().height;
+			h += object->get_height();
 		}
-		if (objects_count() > 1) h += (objects_count() - 1) * object_distance;
+		if (size() > 1) h += (size() - 1) * object_distance;
 		w = distance_of_border_w * 2 + find_max_width();
-		set_form({ .width = w, .height = h });
+		set_width(w);
+		set_height(h);
 	}
 }
 
-size_t Panel::objects_count() 
+size_t Panel::size() 
 {
 	return objects.size();
 }
@@ -125,7 +109,7 @@ float Panel::find_max_height()
 {
 	float max = -1;
 	for (auto object : objects) {
-		if (object->get_form().height > max) max = object->get_form().height;
+		if (object->get_height() > max) max = object->get_height();
 	}
 	return max;
 }
@@ -134,22 +118,24 @@ float Panel::find_max_width()
 {
 	float max = -1;
 	for (auto object : objects) {
-		if (object->get_form().width > max) max = object->get_form().width;
+		if (object->get_width() > max) max = object->get_width();
 	}
 	return max;
 }
 
-void Panel::set_form(const object_form& form, bool default_values)
+void Panel::change(
+	std::optional<float> x, 
+	std::optional<float> y, 
+	std::optional<float> width, 
+	std::optional<float> height)
 {
-	Object::set_form(form, default_values);
-
-	occupied_place = 0;
-	for (auto object : objects) {
-		adjust_object(object.get());
+	Object::change(x, y, width, height);
+	for (auto& object : objects) {
+		object->change(x, y, width, height);
 	}
 }
 
-const float& Panel::get_object_distance()
+const float& Panel::get_distance()
 {
 	return object_distance;
 }
@@ -164,17 +150,33 @@ const float& Panel::get_distance_of_border_h()
 	return distance_of_border_h;
 }
 
+void Panel::set_direction(char direction)
+{
+	this->direction = direction;
+	adjust_objects();
+	adjust_panel();
+}
+
 void Panel::adjust_object(Object* object)
 {
 	if (direction == 'h') {
-		object->set_x(this->get_form().corner_x + occupied_place + distance_of_border_w);
-		object->set_y(this->get_form().corner_y + distance_of_border_h);
-		occupied_place += object->get_form().width + object_distance;
+		object->set_x(get_x() + occupied_place + distance_of_border_w);
+		object->set_y(get_y() + distance_of_border_h);
+		occupied_place += object->get_width() + object_distance;
 	}
 
 	else if (direction == 'v') {
-		object->set_x(this->get_form().corner_x + distance_of_border_w);
-		object->set_y(this->get_form().corner_y + occupied_place + distance_of_border_h);
-		occupied_place += object->get_form().height + object_distance;
+		object->set_x(get_x() + distance_of_border_w);
+		object->set_y(get_y() + occupied_place + distance_of_border_h);
+		occupied_place += object->get_height() + object_distance;
 	}
 }
+
+void Panel::adjust_objects()
+{
+	occupied_place = 0;
+	for (auto object : objects) {
+		adjust_object(object.get());
+	}
+}
+

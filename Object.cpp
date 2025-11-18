@@ -2,12 +2,25 @@
 #include "Object.hpp"
 
 
-Object::Object(SDL_Renderer* render, float center_x, float center_y, float width, float height)
-	: render(render), form{ center_x, center_y, width, height },
-	texture_handler(&form, render)
+Object::Object(SDL_Renderer* renderer, float x, float y, float width, float height)
+	: renderer(renderer), x{x}, y{y}, width{width}, height{height},
+	texture_handler(renderer, this->x, this->y, this->width, this->height)
 {
-	set_form({});
-	set_frame_size();
+	adjust();
+}
+
+Object::Object(SDL_Renderer* renderer, float width, float height)
+	: renderer(renderer), width{width}, height{height},
+	texture_handler(renderer, this->x, this->y, this->width, this->height)
+{
+	adjust();
+}
+
+Object::Object(SDL_Renderer* renderer)
+	: renderer(renderer),
+	texture_handler(renderer, this->x, this->y, this->width, this->height)
+{
+	adjust();
 }
 
 Object::~Object() {	}
@@ -33,8 +46,8 @@ bool Object::cursor_inside() const {
 }
 
 bool Object::inside(float x, float y) const {
-	return (x > form.left_border && x < form.right_border &&
-		y > form.upper_border && y < form.lower_border);
+	return (x > left_border && x < right_border &&
+		y > upper_border && y < lower_border);
 }
 
 void Object::set_texture(SDL_Texture* texture, int frame_w_px, int frame_h_px) 
@@ -53,7 +66,7 @@ void Object::iterate()
 	iterate_frame();
 }
 
-void Object::process_event(SDL_Event* event) 
+void Object::process(SDL_Event* event) 
 {
 	if (event->type == SDL_EVENT_MOUSE_MOTION) {
 		if (in_flag) in_flag = false;
@@ -77,8 +90,8 @@ void Object::process_event(SDL_Event* event)
 void Object::iterate_frame()
 {
 	if (flag_render_frame) {
-		SDL_SetRenderDrawColor(render, frame_color[0], frame_color[1], frame_color[2], 255);
-		SDL_RenderRect(render, &frame);
+		SDL_SetRenderDrawColor(renderer, frame_color[0], frame_color[1], frame_color[2], 255);
+		SDL_RenderRect(renderer, &frame);
 	}
 }
 
@@ -87,33 +100,73 @@ void Object::set_frame_color(uint8_t r, uint8_t g, uint8_t b)
 	frame_color = { r, g, b };
 }
 
-void Object::set_frame_size(float x)
+void Object::set_frame_multiplier(float x)
 {
 	multiplier = x;
-	frame.x = form.left_border - (form.right_border - form.left_border) * (x - 1) / 2;
-	frame.y = form.upper_border - (form.lower_border - form.upper_border) * (x - 1) / 2;
-	frame.w = (form.right_border - form.left_border) * x;
-	frame.h = (form.lower_border - form.upper_border) * x;
+	adjust_frame();
+}
+
+void Object::change(
+	std::optional<float> x, 
+	std::optional<float> y, 
+	std::optional<float> width, 
+	std::optional<float> height)
+{
+	if (x.has_value()) this->x = x.value();
+	if (y.has_value()) this->y = y.value();
+	if (width.has_value()) this->width = width.value();
+	if (height.has_value()) this->height = height.value();
+
+	adjust();
+}
+
+void Object::adjust()
+{
+	left_border = x;
+	right_border = x + width;
+	upper_border = y;
+	lower_border = y + height;
+
+	texture_handler.adjust();
+	adjust_frame();
+}
+
+void Object::adjust_frame()
+{
+	frame.x = left_border - width * (multiplier - 1) / 2;
+	frame.y = upper_border - height * (multiplier - 1) / 2;
+	frame.w = width * multiplier;
+	frame.h = height * multiplier;
 }
 
 void Object::add_x(float x) 
 {
-	set_form({ form.corner_x + x , form.corner_y, form.width, form.height });
+	change(this->x + x, std::nullopt, std::nullopt, std::nullopt);
 }
 
 void Object::add_y(float y) 
 {
-	set_form({ form.corner_x, form.corner_y + y, form.width, form.height });
+	change(std::nullopt, this->y + y, std::nullopt, std::nullopt);
 }
 
 void Object::set_x(float x)
 {
-	set_form({ .corner_x = x });
+	change(x, std::nullopt, std::nullopt, std::nullopt);
 }
 
 void Object::set_y(float y)
 {
-	set_form({ .corner_y = y });
+	change(std::nullopt, y, std::nullopt, std::nullopt);
+}
+
+float Object::get_x()
+{
+	return x;
+}
+
+float Object::get_y()
+{
+	return y;
 }
 
 void Object::render_frame(bool flag) 
@@ -121,33 +174,26 @@ void Object::render_frame(bool flag)
 	flag_render_frame = flag;
 }
 
-void Object::set_form(const object_form& form, bool default_values)
+void Object::set_width(float width)
 {
-	if (default_values) {
-		if (form.corner_x) { this->form.corner_x = form.corner_x; }
-		if (form.corner_y) { this->form.corner_y = form.corner_y; }
-		if (form.width) { this->form.width = form.width; }
-		if (form.height) { this->form.height = form.height; }
-	}
-	else {
-		this->form.corner_x = form.corner_x;
-		this->form.corner_y = form.corner_y;
-		this->form.width = form.width;
-		this->form.height = form.height;
-	}
-
-	this->form.left_border = this->form.corner_x;
-	this->form.right_border = this->form.corner_x + this->form.width;
-	this->form.upper_border = this->form.corner_y;
-	this->form.lower_border = this->form.corner_y + this->form.height;
-
-	texture_handler.set_object_size();
-	set_frame_size(multiplier);
+	this->width = width;
+	adjust();
 }
 
-const object_form& Object::get_form() const 
+void Object::set_height(float height)
 {
-	return form;
+	this->height = height;
+	adjust();
+}
+
+float Object::get_width()
+{
+	return width;
+}
+
+float Object::get_height()
+{
+	return height;
 }
 
 void Object::start_animation(int num, int shot, int delay_ms) 

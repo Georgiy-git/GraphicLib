@@ -8,9 +8,22 @@ MainProcess::MainProcess(SDL_Renderer* render, NetworkHandler* networkHandler)
 	networkHandler(networkHandler),
 	tp(std::chrono::steady_clock::now())
 {
-	auto* texture = IMG_LoadTexture(render, "textures\\gray_button.svg");
+	auto* texture1 = IMG_LoadTexture(render, "textures\\rect_button.png");
+	auto* texture2 = IMG_LoadTexture(render, "textures\\gray_button.svg");
 
-	auto line1 = std::make_shared<Line>("ПАНЕЛЬ УПРАВЛЕНИЯ", render, 0.5, 50, 50, 5);
+
+	auto object = std::make_shared<Object>(render, 200, 200, 200, 200);
+	object->render_frame(true);
+	auto object1 = std::make_shared<Object>(render, 200, 200, 200, 200);
+	object1->render_frame(true);
+
+	auto panel1 = std::make_shared<Panel>(render, 200, 200, 200, 400);
+	panel1->render_frame(true);
+	panel1->add(object);
+	panel1->add(object1);
+	objects.push_back(panel1);
+
+	/*auto line1 = std::make_shared<Line>("ПАНЕЛЬ УПРАВЛЕНИЯ", render, 0.5, 50, 50, 5);
 	objects.push_back(line1);
 
 	auto panel1 = std::make_shared<Panel>(render, 'v', 50, 200, 20, 0);
@@ -56,7 +69,7 @@ MainProcess::MainProcess(SDL_Renderer* render, NetworkHandler* networkHandler)
 	panel1->add(lineEdit2);
 
 	networkHandler->change_endpoint(_lineEdit1->get_text(), _lineEdit3->get_text());
-	networkHandler->async_connect();
+	networkHandler->async_connect();*/
 }
 
 void MainProcess::iterate() 
@@ -65,14 +78,14 @@ void MainProcess::iterate()
 		object->iterate();
 	}
 
-	if (!networkHandler->connected && connected) {
+	/*if (!networkHandler->connected && connected) {
 		connected = false;
 		_line3->set_text("Соединение: не отвечает");
 	}
 	else if (networkHandler->connected && !connected) {
 		connected = true;
 		_line3->set_text("Соединение: установлено");
-	}
+	}*/
 }
 
 void MainProcess::event(SDL_Event* event) 
@@ -87,7 +100,7 @@ void MainProcess::event(SDL_Event* event)
 
 	}
 	else if (event->type == SDL_EVENT_KEY_DOWN) {
-		if (event->key.scancode == SDL_SCANCODE_RETURN && 
+		/*if (event->key.scancode == SDL_SCANCODE_RETURN && 
 			(_lineEdit1->has_focus() || _lineEdit3->has_focus())) 
 		{
 			if (networkHandler->socket.is_open()) networkHandler->socket.close();
@@ -106,10 +119,10 @@ void MainProcess::event(SDL_Event* event)
 						_lineEdit2->clear();
 					});
 			}
-		}
+		}*/
 	}
 
 	for (auto object : objects) {
-		object->process_event(event);
+		object->process(event);
 	}
 }

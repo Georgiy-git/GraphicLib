@@ -4,12 +4,11 @@
 #include <functional>
 #include <chrono>
 
-struct object_form;
 
 class TextureHandler
 {
 public:
-	TextureHandler(object_form* form, SDL_Renderer* render);
+	TextureHandler(SDL_Renderer* renderer, float& x, float& y, float& width, float& height);
 
 	// num - номер ряда
 	// shot - количество кадров в анимации
@@ -26,11 +25,14 @@ public:
 	void set_texture(SDL_Texture* texture, int frame_w_px, int frame_h_px);
 
 	// Установить размер и положение изображения под размер и положение объекта.
-	void set_object_size();
+	void adjust();
 
 protected:
-	object_form* form;
-	SDL_Renderer* render;
+	float& x;
+	float& y;
+	float& width;
+	float& height;
+	SDL_Renderer* renderer;
 
 	std::chrono::steady_clock::time_point animation_start;
 	std::chrono::microseconds delay;
