@@ -71,8 +71,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>C:\libs\SDL3_image-3.2.4\include;C:\libs\SDL3-3.2.20\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\libs\SDL3_image-3.2.4\lib\x64;C:\libs\SDL3-3.2.20\lib\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\home\libs\SDL3_image-3.2.4\include;C:\home\libs\SDL3-3.2.20\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\home\libs\SDL3_image-3.2.4\lib\x64;C:\home\libs\SDL3-3.2.20\lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -122,7 +122,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>C:\libs\boost_1_89_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\home\libs\boost_1_89_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
